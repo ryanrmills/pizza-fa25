@@ -7,6 +7,11 @@ const app = express();
 // Enable static file serving
 app.use(express.static('public'));
 
+// Allow the app to parse form data
+app.use(express.urlencoded({ extended: true }));
+
+const orders = [];
+
 // Define the port number where our server will listen
 const PORT = 3001;
 
@@ -19,6 +24,35 @@ app.get('/', (req, res) => {
     // res.send(`<h1>Welcome to Poppa\'s Pizza!</h1>`);
     res.sendFile(`${import.meta.dirname}/views/home.html`);
 });
+
+//Define a 'contact-us' route
+app.get('/contact-us', (req, res) => {
+    res.sendFile(`${import.meta.dirname}/views/contact.html`)
+})
+
+
+app.get('/admin', (req, res) => {
+    res.send(orders);
+    // res.sendFile(`${import.meta.dirname}/views/admin.html`);
+})
+
+//define a "confirmation" route
+app.post('/submit-order', (req, res) => {
+    // Create an array to store orders
+    const order = {
+        fname: req.body.fname,
+        lname: req.body.lname,
+        email: req.body.email,
+        method: req.body.method,
+        toppings: req.body.toppings,
+        size: req.body.size,
+        comment: req.body.comment
+    };
+    orders.push(order);
+    console.log(orders);
+    // console.log(req.body);
+    res.sendFile(`${import.meta.dirname}/views/confirmation.html`);
+})
 
 // Start the server and make it listen on the port 
 // specified above
